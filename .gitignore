@@ -1,0 +1,28 @@
+# Raw and intermediate data
+data/raw/
+data/interim/
+data/processed/
+
+# Model files
+artifacts/models/
+*.joblib
+*.pkl
+
+# Python cache
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Environment / local files
+.env
+.venv/
+venv/
+.DS_Store
+Thumbs.db
+
+# Large scientific data formats
+*.parquet
+*.h5
+*.hdf5
+*.feather
+*.csv.gz

@@ -1,0 +1,2 @@
+﻿target_gene,observed_R2,observed_RMSE,permutation_mean_R2,permutation_max_R2,permutation_min_R2,n_permutations,empirical_p_value
+FAM50A,0.4038041894822615,0.48768263539783985,-0.5840702701009151,0.06626029319930149,-2.4214412201717206,50,0.0196078431372549

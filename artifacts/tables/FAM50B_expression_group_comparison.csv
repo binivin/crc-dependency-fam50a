@@ -1,0 +1,2 @@
+﻿feature,median_expression,low_group_n,high_group_n,low_group_mean_FAM50A_effect,high_group_mean_FAM50A_effect,low_group_median_FAM50A_effect,high_group_median_FAM50A_effect,mannwhitney_u,mannwhitney_p
+expr_FAM50B (26240),0.1169036703157194,30,29,-1.3655045527537253,-0.6278617934638885,-1.3635736503121292,-0.4897643562578331,144.0,1.0600386981622347e-05

@@ -1,0 +1,7 @@
+file_name,source_release,role
+CRISPRGeneEffect.csv,26Q1,CRISPR dependency label
+OmicsExpressionProteinCodingGenesTPMLogp1.csv,25Q2,expression feature
+OmicsCNGene.csv,24Q4,CNV feature
+OmicsSomaticMutations.csv,26Q1,mutation feature
+Model.csv,26Q1,cell line metadata
+ModelCondition.csv,26Q1,model condition metadata
