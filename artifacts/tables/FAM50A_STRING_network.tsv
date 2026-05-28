@@ -1,0 +1,3 @@
+﻿stringId_A	stringId_B	preferredName_A	preferredName_B	ncbiTaxonId	score	nscore	fscore	pscore	ascore	escore	dscore	tscore
+9606.ENSP00000369627	9606.ENSP00000377225	FAM50B	FAM50A	9606	0.489	0	0	0.051	0	0.222	0	0.363
+9606.ENSP00000369627	9606.ENSP00000497308	FAM50B	ZDBF2	9606	0.607	0	0	0	0	0	0	0.607
