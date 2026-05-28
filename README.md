@@ -1,68 +1,64 @@
-\# AI-based Prediction of Cancer Cell Gene Dependency and CRISPR Knockdown Network Simulation
+\# CRC Dependency Analysis: FAM50A and FAM50B
 
 
 
-\## Overview
+\## Project Summary
 
 
 
-This project explores gene dependency prediction in colorectal cancer cell lines using DepMap CRISPR gene effect scores and multi-omics features. The current analysis focuses on DepMap colorectal adenocarcinoma cell lines and identifies a candidate context-specific vulnerability involving FAM50A dependency and FAM50B expression.
+This project analyzes colorectal cancer cell lines from DepMap to predict CRISPR-based gene dependency using multi-omics features.
 
 
 
-\## Current Dataset
+The current result focuses on a candidate dependency relationship between FAM50A and FAM50B expression.
 
 
 
-\* Data source: DepMap
-
-\* Cancer type: Colorectal adenocarcinoma
-
-\* Number of selected cell lines: 59
-
-\* Features used:
+\## Dataset
 
 
 
-&#x20; \* Gene expression
+| Item | Description |
 
-&#x20; \* Copy number variation
+|---|---|
 
-&#x20; \* Somatic mutation
+| Data source | DepMap |
 
-\* Label:
+| Cancer type | Colorectal adenocarcinoma |
 
+| Number of cell lines | 59 |
 
+| Features | Expression, CNV, mutation |
 
-&#x20; \* CRISPR gene effect score
-
-
-
-Raw DepMap data files are not included in this repository. Only analysis scripts, summary tables, and figures are stored.
+| Label | CRISPR gene effect score |
 
 
 
-\## Workflow Completed So Far
+Raw DepMap files are not included in this repository.
 
 
 
-1\. DepMap files were manually downloaded.
+\## Workflow
 
-2\. Colorectal cancer cell lines were filtered using Model metadata.
 
-3\. CRISPR gene effect, expression, CNV, and mutation matrices were subset to the colorectal cancer cohort.
 
-4\. Mutation data were transformed into a gene-level binary mutation matrix.
+1\. DepMap files were downloaded manually.
 
-5\. Initial colorectal cancer biomarker genes such as KRAS, BRAF, APC, TP53, PIK3CA, SMAD4, and FBXW7 were tested as dependency prediction targets.
+2\. Colorectal cancer cell lines were selected using Model metadata.
 
-6\. Candidate target genes were selected based on CRISPR gene effect variability.
+3\. CRISPR gene effect, expression, CNV, and mutation data were filtered to 59 colorectal cancer cell lines.
 
-7\. Elastic Net models were trained using expression, CNV, and mutation features.
+4\. Mutation data were converted into a gene-level binary matrix.
+
+5\. Initial colorectal cancer genes such as KRAS, BRAF, APC, TP53, PIK3CA, SMAD4, and FBXW7 were tested.
+
+6\. Candidate dependency targets were selected based on CRISPR gene effect variability.
+
+7\. Elastic Net models were trained using multi-omics features.
 
 8\. FAM50A was selected as the strongest pilot dependency target.
 
-9\. FAM50B expression was identified as the key explanatory feature for FAM50A dependency.
+9\. FAM50B expression was identified as the key explanatory feature.
 
 
 
@@ -74,97 +70,61 @@ Raw DepMap data files are not included in this repository. Only analysis scripts
 
 
 
-The best pilot target was FAM50A.
+| Model | Result |
 
+|---|---:|
 
+| Full multi-omics model R² | 0.404 |
 
-\* Full multi-omics model:
+| Correlation | 0.648 |
 
+| Permutation test p-value | 0.0196 |
 
 
-&#x20; \* R² = 0.404
 
-&#x20; \* Correlation = 0.648
+The observed prediction performance was higher than all 50 permuted-label models.
 
 
 
-\* Permutation test:
+\## FAM50B Expression as the Main Feature
 
 
 
-&#x20; \* Observed R² = 0.404
+| Feature set | R² |
 
-&#x20; \* Maximum permuted R² = 0.066
+|---|---:|
 
-&#x20; \* Empirical p-value = 0.0196
+| FAM50B expression only | 0.434 |
 
+| Full model | 0.404 |
 
+| Full model without FAM50B expression | 0.103 |
 
-These results suggest that the FAM50A dependency prediction signal is unlikely to be explained by random label structure alone.
 
 
+This suggests that FAM50B expression is the main explanatory feature for FAM50A dependency.
 
-\### FAM50B Expression as a Key Feature
 
 
+\## Group Comparison
 
-FAM50B expression was the most stable feature selected across cross-validation folds.
 
 
+| Group | Median FAM50A gene effect |
 
-Model comparison:
+|---|---:|
 
+| FAM50B-low group | -1.36 |
 
+| FAM50B-high group | -0.49 |
 
-\* FAM50B expression only:
 
 
+Mann-Whitney p-value: 1.06e-05
 
-&#x20; \* R² = 0.434
 
-\* Full model:
 
-
-
-&#x20; \* R² = 0.404
-
-\* Full model without FAM50B expression:
-
-
-
-&#x20; \* R² = 0.103
-
-
-
-This suggests that FAM50B expression is the major explanatory variable for FAM50A dependency in the selected colorectal cancer cell lines.
-
-
-
-\### Group Comparison
-
-
-
-FAM50B expression was split into low and high groups by median expression.
-
-
-
-\* FAM50B-low group:
-
-
-
-&#x20; \* Median FAM50A gene effect = -1.36
-
-\* FAM50B-high group:
-
-
-
-&#x20; \* Median FAM50A gene effect = -0.49
-
-\* Mann-Whitney p-value = 1.06e-05
-
-
-
-Since more negative CRISPR gene effect values indicate stronger dependency, this result suggests that FAM50B-low colorectal cancer cell lines may be more dependent on FAM50A.
+Because more negative CRISPR gene effect values indicate stronger dependency, this result suggests that FAM50B-low colorectal cancer cell lines may be more dependent on FAM50A.
 
 
 
@@ -172,7 +132,11 @@ Since more negative CRISPR gene effect values indicate stronger dependency, this
 
 
 
-The current result supports the hypothesis that FAM50A may act as a context-specific vulnerability in FAM50B-low colorectal cancer cell lines. This should be interpreted as a computational association rather than direct experimental proof.
+The current result suggests that FAM50A may act as a context-specific vulnerability in FAM50B-low colorectal cancer cell lines.
+
+
+
+This is a computational association and should not be interpreted as direct experimental proof.
 
 
 
@@ -180,15 +144,13 @@ The current result supports the hypothesis that FAM50A may act as a context-spec
 
 
 
-1\. Build a STRING functional network using FAM50A, FAM50B, and stable model features.
+1\. Build a STRING network using FAM50A, FAM50B, and stable model features.
 
 2\. Perform Reactome pathway enrichment analysis.
 
-3\. Extend the analysis to TCGA COAD/READ patient tumors.
+3\. Extend the analysis to TCGA COAD and READ patient tumors.
 
-4\. Define FAM50B-low patient groups and estimate potential FAM50A vulnerability.
+4\. Define FAM50B-low patient groups.
 
-5\. Develop a CRISPR knockdown network propagation simulation.
-
-
+5\. Develop a CRISPR knockdown network simulation.
 
