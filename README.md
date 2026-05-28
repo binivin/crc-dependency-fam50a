@@ -1,277 +1,294 @@
 # CRC Dependency Analysis: FAM50A and FAM50B
 
-This repository contains a computational pipeline for predicting colorectal cancer gene dependency and connecting the result to TCGA patient stratification and CRISPR knockdown network simulation.
+> DepMap-based colorectal cancer gene dependency prediction, TCGA patient projection, and CRISPR knockdown network simulation.
 
-The main finding so far is that FAM50A dependency in colorectal cancer cell lines is strongly associated with FAM50B expression. This relationship was detected in DepMap cell lines, projected onto TCGA COAD/READ tumors, and used to build a simple knockdown simulation model.
+This repository contains a computational biology pipeline for identifying context-specific cancer cell vulnerabilities. The current analysis focuses on the relationship between **FAM50A dependency** and **FAM50B expression** in colorectal cancer.
 
-## Project goal
+The main finding is that **FAM50B-low colorectal cancer cell lines show stronger FAM50A dependency in DepMap**, and this relationship can be projected onto TCGA COAD/READ patient tumors as a predicted vulnerability axis.
 
-The broader goal of this project is to build an AI-based workflow for cancer cell gene dependency prediction and CRISPR knockdown network simulation.
+---
 
-Current completed modules:
+## Highlights
 
-- DepMap colorectal cancer cohort construction
-- Multi-omics dependency prediction
-- FAM50A and FAM50B relationship validation
-- STRING and Reactome network/pathway analysis
-- TCGA COAD/READ patient projection
-- Clinical association analysis
-- CRISPR knockdown network simulation MVP
+- Built a DepMap colorectal cancer cohort with **59 cell lines**.
+- Integrated CRISPR gene effect, expression, copy number variation, and mutation features.
+- Tested known colorectal cancer genes, then switched to data-driven target selection.
+- Identified **FAM50A** as the strongest pilot dependency target.
+- Found **FAM50B expression** as the key explanatory feature for FAM50A dependency.
+- Projected the DepMap-derived FAM50A vulnerability axis onto **647 TCGA COAD/READ primary tumors**.
+- Explored clinical association using stage, survival, and Cox regression.
+- Implemented a simple **FAM50A CRISPR knockdown network simulation MVP**.
+
+---
+
+## Graphical summary
+
+![FAM50A knockdown simulation](artifacts/figures/FAM50A_knockdown_simulation_fitness_trajectory.png)
+
+The final simulation suggests that tumors with high predicted FAM50A vulnerability would show the largest relative fitness decrease under simulated FAM50A knockdown.
+
+---
+
+## Project workflow
+
+```text
+DepMap data
+  -> colorectal cancer cell line filtering
+  -> multi-omics feature matrix construction
+  -> CRISPR dependency target selection
+  -> FAM50A dependency modeling
+  -> FAM50B feature interpretation
+  -> STRING / Reactome analysis
+  -> TCGA COAD/READ patient projection
+  -> clinical association analysis
+  -> CRISPR knockdown network simulation
+```
+
+---
 
 ## Data sources
 
-The analysis uses public cancer genomics and functional genomics resources.
+The analysis uses public functional genomics and cancer genomics resources.
 
-DepMap cell line data:
+| Source | Role in this project |
+|---|---|
+| DepMap | CRISPR gene effect labels and cell line multi-omics features |
+| GDC / TCGA | COAD/READ patient RNA-seq expression and clinical metadata |
+| STRING | Functional network around FAM50A model features |
+| Reactome | Exploratory pathway enrichment analysis |
 
-- CRISPR gene effect scores
-- Gene expression
-- Copy number variation
-- Somatic mutation
-- Model metadata
+Raw DepMap and GDC files are not included in this repository because of file size and data-use considerations. This repository stores scripts, manifests, summary tables, and generated figures.
 
-TCGA/GDC patient data:
+---
 
-- TCGA-COAD and TCGA-READ STAR-Counts expression files
-- Clinical metadata including stage, vital status, survival follow-up, age, and project information
+## Main results
 
-Raw DepMap and GDC files are not included in this repository because of file size and data-use considerations. The repository stores analysis scripts, summary tables, figures, and manifests.
+### 1. FAM50A dependency is predictable in DepMap colorectal cancer cell lines
 
-## Analysis workflow
+A multi-omics Elastic Net model predicted FAM50A CRISPR gene effect with moderate performance.
 
-The project was developed in the following order.
+| Metric | Value |
+|---|---:|
+| R2 | 0.404 |
+| Correlation | 0.648 |
+| RMSE | 0.488 |
+| Permutation empirical p-value | 0.0196 |
 
-1. DepMap files were downloaded and checked.
-2. Colorectal adenocarcinoma cell lines were selected from Model metadata.
-3. CRISPR gene effect, expression, CNV, and mutation matrices were filtered to the colorectal cancer cohort.
-4. Mutation data were converted into a gene-level binary mutation matrix.
-5. Initial colorectal cancer genes such as KRAS, BRAF, APC, TP53, PIK3CA, SMAD4, and FBXW7 were tested as dependency targets.
-6. Candidate dependency targets were selected based on CRISPR gene effect variability.
-7. Elastic Net models were trained using expression, CNV, and mutation features.
-8. FAM50A was selected as the strongest pilot dependency target.
-9. FAM50B expression was identified as the key explanatory feature for FAM50A dependency.
-10. STRING and Reactome analyses were performed for model-derived genes.
-11. TCGA COAD/READ expression data were used to project FAM50A vulnerability into patient tumors.
-12. Clinical association analyses were performed using stage, survival, age, and project metadata.
-13. A simple FAM50A knockdown network simulation was implemented as an MVP model.
+![FAM50A actual vs predicted](artifacts/figures/diagnostic_FAM50A_actual_vs_predicted.png)
 
-## Key result 1: FAM50A dependency prediction in DepMap
+---
 
-FAM50A was the strongest pilot target among candidate dependency genes.
+### 2. FAM50B expression explains FAM50A dependency
 
-Full multi-omics Elastic Net model:
+FAM50B expression was the most stable feature selected across cross-validation folds. A model using only FAM50B expression performed as well as, or slightly better than, the full multi-omics model.
 
-- R2: 0.404
-- Correlation: 0.648
-- RMSE: 0.488
+| Model | R2 |
+|---|---:|
+| FAM50B expression only | 0.434 |
+| Full multi-omics model | 0.404 |
+| Full model without FAM50B expression | 0.103 |
 
-Permutation test:
+![FAM50B expression vs FAM50A dependency](artifacts/figures/FAM50A_FAM50B_relationship.png)
 
-- Observed R2: 0.404
-- Maximum permuted R2: 0.066
-- Empirical p-value: 0.0196
+---
 
-This suggests that the FAM50A dependency prediction signal is unlikely to be explained by random label structure alone.
+### 3. FAM50B-low cell lines show stronger FAM50A dependency
 
-## Key result 2: FAM50B expression explains FAM50A dependency
+FAM50B-low colorectal cancer cell lines showed more negative FAM50A gene effect values, indicating stronger dependency.
 
-FAM50B expression was the most stable feature selected across cross-validation folds.
+| Group | Median FAM50A gene effect |
+|---|---:|
+| FAM50B-low | -1.36 |
+| FAM50B-high | -0.49 |
 
-Model comparison:
+Mann-Whitney p-value: **1.06e-05**
 
-- FAM50B expression only: R2 = 0.434
-- Full multi-omics model: R2 = 0.404
-- Full model without FAM50B expression: R2 = 0.103
+![FAM50A dependency by FAM50B group](artifacts/figures/FAM50A_dependency_by_FAM50B_group.png)
 
-This suggests that FAM50B expression is the main explanatory variable for FAM50A dependency in the selected colorectal cancer cell lines.
+---
 
-## Key result 3: FAM50B-low cell lines show stronger FAM50A dependency
-
-FAM50B expression was split into low and high groups by median expression.
-
-Group comparison:
-
-- FAM50B-low group median FAM50A gene effect: -1.36
-- FAM50B-high group median FAM50A gene effect: -0.49
-- Mann-Whitney p-value: 1.06e-05
-
-Because more negative CRISPR gene effect values indicate stronger dependency, this result suggests that FAM50B-low colorectal cancer cell lines may be more dependent on FAM50A.
-
-## Network and pathway analysis
+### 4. STRING network supports a functional FAM50A-FAM50B connection
 
 STRING functional network analysis returned a compact network connecting FAM50A, FAM50B, and ZDBF2.
 
-Network structure:
+```text
+FAM50A -- FAM50B -- ZDBF2
+```
 
-- FAM50A -- FAM50B
-- FAM50B -- ZDBF2
+![FAM50A STRING network](artifacts/figures/FAM50A_STRING_network.png)
 
-This supports the interpretation that FAM50A and FAM50B are functionally associated, although STRING evidence should not be treated as direct experimental proof of physical interaction.
+Reactome over-representation analysis did not identify significant pathways at FDR < 0.05. Therefore, Reactome results are treated as exploratory only.
 
-Reactome over-representation analysis was also performed using model-derived gene sets. No pathway passed the conventional FDR < 0.05 threshold. Weak exploratory signals appeared for intestinal absorption and mitochondrial RNA modification, but these should not be interpreted as statistically significant pathway-level findings.
+---
 
-## TCGA patient projection
+### 5. TCGA COAD/READ tumors can be stratified by FAM50B expression
 
-TCGA COAD/READ primary tumor expression data were used to project the DepMap-derived FAM50A vulnerability relationship into patient tumors.
+FAM50A and FAM50B expression values were extracted from TCGA COAD/READ primary tumor RNA-seq files.
 
-Expression cohort:
+| Cohort | Number of primary tumors |
+|---|---:|
+| TCGA-COAD | 481 |
+| TCGA-READ | 166 |
+| Total | 647 |
 
-- TCGA primary tumor samples: 647
-- TCGA-COAD: 481
-- TCGA-READ: 166
+FAM50B expression was used to define FAM50B-low and FAM50B-high tumor groups.
 
-FAM50B expression groups:
+![TCGA FAM50B expression distribution](artifacts/figures/tcga_crc_FAM50B_expression_distribution.png)
 
-- FAM50B-low tumors: 324
-- FAM50B-high tumors: 323
-- FAM50B median log2(TPM+1): 2.4094
+---
 
-FAM50A expression was slightly higher in the FAM50B-high group than in the FAM50B-low group.
-
-FAM50A and FAM50B expression correlation in TCGA:
-
-- Pearson r: 0.224
-- Spearman r: 0.174
-
-This indicates that TCGA tumors can be stratified by FAM50B expression, but TCGA expression alone does not directly measure CRISPR dependency.
-
-## Predicted FAM50A vulnerability in TCGA
+### 6. DepMap-derived FAM50A vulnerability can be projected onto TCGA tumors
 
 A simple DepMap-derived linear model was trained using FAM50B expression to predict FAM50A gene effect.
 
-DepMap FAM50B-only model:
-
-- Intercept: -1.3587
-- Slope: 0.3651
-- R2: 0.5179
-- RMSE: 0.4385
-
-The model was applied to TCGA COAD/READ tumors to generate a predicted FAM50A vulnerability score.
+| Parameter | Value |
+|---|---:|
+| Intercept | -1.3587 |
+| Slope | 0.3651 |
+| DepMap R2 | 0.5179 |
+| RMSE | 0.4385 |
 
 TCGA predicted vulnerability groups:
 
-- High predicted vulnerability: 162 tumors
-- Intermediate: 323 tumors
-- Low predicted vulnerability: 162 tumors
+| Group | Number of tumors |
+|---|---:|
+| High predicted vulnerability | 162 |
+| Intermediate | 323 |
+| Low predicted vulnerability | 162 |
 
-Project-level comparison:
+Predicted vulnerability was higher in TCGA-COAD than in TCGA-READ.
 
-- COAD median vulnerability score: 0.5591
-- READ median vulnerability score: 0.2303
-- Mann-Whitney p-value: 0.001198
+![Predicted FAM50A vulnerability by project](artifacts/figures/tcga_crc_predicted_FAM50A_vulnerability_by_project.png)
 
-This suggests that predicted FAM50A vulnerability is more common or stronger in TCGA-COAD than TCGA-READ in this model.
+---
 
-## Clinical association analysis
+### 7. Predicted FAM50A vulnerability was not an independent survival marker
 
-Predicted FAM50A vulnerability scores were merged with TCGA clinical metadata.
+Predicted vulnerability scores were merged with TCGA clinical metadata.
 
-Merged cohort:
+| Analysis | Result |
+|---|---:|
+| Merged clinical cases | 624 |
+| Stage-known cases | 506 |
+| Survival-usable cases | 530 |
+| Stage-vulnerability chi-square p-value | 0.2733 |
+| High vs low log-rank p-value | 0.09184 |
+| Final adjusted Cox HR | 0.961 |
+| Final adjusted Cox p-value | 0.721 |
 
-- Merged cases: 624
-- Stage-known cases: 506
-- Survival-usable cases: 530
+These results do not support predicted FAM50A vulnerability as an independent overall survival prognostic marker in the current TCGA analysis.
 
-Stage association:
+![Kaplan-Meier by predicted vulnerability](artifacts/figures/tcga_crc_fam50a_vulnerability_kaplan_meier.png)
 
-- Stage-vulnerability chi-square p-value: 0.2733
+---
 
-Survival analysis:
+### 8. Knockdown simulation shows stronger fitness loss in the high-vulnerability group
 
-- High vs low vulnerability log-rank p-value: 0.09184
-- High vs low overall survival days Mann-Whitney p-value: 0.2737
+A simple network simulation was implemented using the STRING-derived FAM50A-FAM50B-ZDBF2 network and TCGA predicted vulnerability scores.
 
-Cox regression:
+At full simulated knockdown intensity alpha = 1:
 
-- Vulnerability-only HR: 0.933, p = 0.436
-- Project-adjusted HR: 0.928, p = 0.402
-- Project and age-adjusted HR: 0.891, p = 0.205
-- Project, stage, and age-adjusted HR: 0.961, p = 0.721
+| Group | Median relative fitness |
+|---|---:|
+| High predicted vulnerability | 0.385 |
+| Intermediate | 0.619 |
+| Low predicted vulnerability | 1.000 |
 
-These results do not support predicted FAM50A vulnerability as an independent overall survival prognostic marker in the current TCGA analysis. The safer interpretation is that FAM50A vulnerability is a molecular dependency hypothesis rather than a validated survival marker.
+![FAM50A knockdown trajectory](artifacts/figures/FAM50A_knockdown_simulation_fitness_trajectory.png)
 
-## CRISPR knockdown network simulation MVP
-
-A simple FAM50A knockdown simulation was implemented using the TCGA predicted vulnerability score and the STRING-derived network.
-
-Simulation setup:
-
-- Source node: FAM50A
-- Network: FAM50A -- FAM50B -- ZDBF2
-- Knockdown intensity alpha: 0 to 1
-- Relative fitness model: fitness = exp(-vulnerability score x FAM50A loss)
-
-Simulated full knockdown result at alpha = 1:
-
-- High predicted vulnerability group median relative fitness: 0.385
-- Intermediate group median relative fitness: 0.619
-- Low predicted vulnerability group median relative fitness: 1.000
-
-This shows that the predicted high-vulnerability group has the strongest simulated fitness decrease under FAM50A knockdown.
+![FAM50A knockdown full effect](artifacts/figures/FAM50A_knockdown_alpha1_fitness_boxplot.png)
 
 This simulation is a conceptual MVP model. It does not replace wet-lab CRISPR knockdown experiments or mechanistic biochemical modeling.
 
-## Main interpretation
+---
 
-The current pipeline supports the following interpretation.
+## Interpretation
 
-FAM50B-low colorectal cancer cell lines show stronger FAM50A dependency in DepMap. This relationship can be projected onto TCGA COAD/READ tumors to define a predicted FAM50A vulnerability axis. The axis does not appear to be an independent overall survival marker in the current TCGA clinical analysis, but it can be used to define a molecularly stratified group that may be more sensitive to FAM50A perturbation in a simulation setting.
+The current pipeline supports the following interpretation:
 
-## Limitations
+> FAM50B-low colorectal cancer cell lines show stronger FAM50A dependency in DepMap. This relationship can be projected onto TCGA COAD/READ tumors to define a predicted FAM50A vulnerability axis. The axis is not an independent survival marker in the current TCGA clinical analysis, but it can be used to define a molecularly stratified group that may be more sensitive to FAM50A perturbation in a simulation setting.
 
-Important limitations:
-
-- The DepMap cohort contains only 59 colorectal cancer cell lines.
-- TCGA tumors do not have direct CRISPR dependency measurements.
-- The TCGA predicted vulnerability score is inferred from a DepMap-derived expression model.
-- Clinical association results are exploratory and affected by missing clinical metadata.
-- Reactome pathway enrichment did not identify statistically significant pathways at FDR < 0.05.
-- The knockdown network simulation is a toy MVP model, not a validated mechanistic model.
-- Experimental validation would be required to confirm FAM50A as a therapeutic vulnerability in FAM50B-low colorectal cancer.
+---
 
 ## Repository structure
 
-Main folders:
+```text
+crc-dependency-fam50a/
+├─ src/                  # analysis scripts
+├─ artifacts/
+│  ├─ figures/           # generated plots
+│  ├─ tables/            # result tables and summaries
+│  └─ manifests/         # file manifests and metadata tables
+├─ data/                 # local data, excluded from GitHub
+├─ README.md
+└─ requirements.txt
+```
 
-- src: analysis scripts
-- artifacts/tables: result tables and summaries
-- artifacts/figures: generated plots
-- artifacts/manifests: file manifests and metadata tables
-- data: local raw, interim, and processed data folders excluded from GitHub
+---
 
-## Representative outputs
+## How to reproduce
 
-Representative figures include:
+### 1. Create environment
 
-- FAM50A actual vs predicted dependency plot
-- FAM50A permutation test
-- FAM50B expression versus FAM50A dependency plot
-- FAM50A dependency by FAM50B group
-- STRING network around FAM50A model features
-- TCGA FAM50B expression distribution
-- TCGA predicted FAM50A vulnerability distribution
-- Kaplan-Meier curve by predicted vulnerability group
-- FAM50A knockdown simulation trajectory
+```bash
+conda create -n crcdep python=3.11 -y
+conda activate crcdep
+pip install -r requirements.txt
+```
 
-Representative tables include:
+### 2. Prepare data
 
-- Candidate dependency target results
-- FAM50A ablation results
-- FAM50B feature importance validation
-- Reactome enrichment results
-- TCGA FAM50 expression summary
-- TCGA predicted vulnerability summary
-- TCGA clinical association summary
-- Cox regression summary
-- Knockdown simulation summary
+Raw DepMap and GDC files must be downloaded separately and placed under local `data/raw/` folders.
+
+The main expected local data folders are:
+
+```text
+data/raw/depmap/
+data/raw/gdc/expression/
+```
+
+### 3. Run the main analysis scripts
+
+The repository is organized as a sequential analysis pipeline. Representative scripts include:
+
+```bash
+python src/check_depmap_files.py
+python src/build_depmap_crc_cohort.py
+python src/subset_depmap_crc_matrices.py
+python src/build_crc_mutation_matrix.py
+python src/train_candidate_targets_elastic_net.py
+python src/diagnose_best_target.py
+python src/validate_fam50b_feature_importance.py
+python src/build_fam50a_string_network.py
+python src/run_fam50a_reactome_enrichment.py
+python src/query_gdc_crc_expression.py
+python src/extract_tcga_fam50_expression.py
+python src/predict_tcga_fam50a_vulnerability.py
+python src/query_gdc_crc_clinical.py
+python src/analyze_tcga_vulnerability_clinical.py
+python src/cox_tcga_fam50a_vulnerability.py
+python src/simulate_fam50a_knockdown_network.py
+```
+
+---
+
+## Limitations
+
+- The DepMap colorectal cancer cohort contains only 59 cell lines.
+- TCGA tumors do not have direct CRISPR dependency measurements.
+- The TCGA vulnerability score is inferred from a DepMap-derived expression model.
+- Clinical association results are exploratory and affected by missing metadata.
+- Reactome pathway enrichment did not identify significant pathways at FDR < 0.05.
+- The knockdown simulation is a toy MVP model, not a validated mechanistic model.
+- Experimental validation is required to confirm FAM50A as a therapeutic vulnerability in FAM50B-low colorectal cancer.
+
+---
 
 ## Next steps
 
-Possible next steps:
-
-1. Refine the knockdown simulation model using a larger biological network.
-2. Add confidence intervals or bootstrapping to the TCGA vulnerability projection.
-3. Compare FAM50A/FAM50B patterns across additional cancer types.
-4. Add independent cell line or CRISPR screen validation if available.
-5. Organize the repository into modular folders for preprocessing, modeling, TCGA analysis, and simulation.
-6. Write a concise research report based on the current pipeline and results.
+- Refine the knockdown simulation using a larger biological network.
+- Add bootstrapping or confidence intervals to the TCGA vulnerability projection.
+- Compare FAM50A/FAM50B patterns across additional cancer types.
+- Test independent CRISPR or cell line datasets if available.
+- Organize scripts into modular folders for preprocessing, modeling, TCGA analysis, and simulation.
+- Convert the current pipeline into a concise research report and presentation.
