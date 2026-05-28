@@ -1,0 +1,2 @@
+﻿n_samples,fam50b_median_log2_tpm1,fam50b_low_n,fam50b_high_n,fam50a_low_group_median,fam50a_high_group_median,fam50a_group_mannwhitney_p,fam50a_fam50b_pearson_r,fam50a_fam50b_pearson_p,fam50a_fam50b_spearman_r,fam50a_fam50b_spearman_p
+647,2.409418092494648,324,323,6.423002008690991,6.582539444440895,0.000666711486144798,0.22354716278877948,9.025633703850163e-09,0.1744275618180423,8.102894878389192e-06

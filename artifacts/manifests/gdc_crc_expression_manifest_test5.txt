@@ -1,0 +1,6 @@
+id	filename	md5sum	size
+ff710149-0fc6-464a-93cb-e3b9bdcf3525	dfb9c45f-cb52-4e36-b663-1a9e8c7c0b47.rna_seq.augmented_star_gene_counts.tsv	0322f762090e53965c964b763ce9cd7c	4204474
+9e159c7f-39ac-4051-83db-983d3aeba5a9	d9780581-dfca-4e83-9bb4-4836f22d910e.rna_seq.augmented_star_gene_counts.tsv	5a91fb7b742ff86552a121282ff81cbc	4228989
+2063302d-2b9d-4550-8426-fb64f5ea89d1	eb67b977-b299-4bbc-b3f6-25d516473405.rna_seq.augmented_star_gene_counts.tsv	e8822385915d04e3fb578d51efd5894b	4239347
+a44fa392-54c2-48b0-b342-e3e9e8340a8f	db087000-74fa-4044-812f-01842b99f448.rna_seq.augmented_star_gene_counts.tsv	67bff0bcb7e69bcfc6d8afa49cf32b0e	4201072
+31951036-bbb7-4f77-bce9-358a0ecd65ef	de2e0c63-0c2d-43af-a006-7d84557a1c3c.rna_seq.augmented_star_gene_counts.tsv	7650ca1353b8acfc8a0b8c19fa3db710	4243733
