@@ -29,6 +29,19 @@ The final simulation suggests that tumors with high predicted FAM50A vulnerabili
 
 ---
 
+## Kaggle resources
+
+A public Kaggle dataset and notebook are available for viewing the generated figures, summary tables, and figure-centered analysis workflow.
+
+| Resource | Link |
+|---|---|
+| Kaggle Notebook | [FAM50A Dependency in FAM50B-low Colorectal Cancer](https://www.kaggle.com/code/binivin/fam50a-dependency-in-fam50b-low-colorectal-cancer) |
+| Kaggle Dataset | [CRC Dependency FAM50A](https://www.kaggle.com/datasets/binivin/crc-dependency-fam50a) |
+
+The Kaggle notebook provides a concise visual summary of the DepMap dependency modeling, TCGA patient projection, clinical association analysis, and CRISPR knockdown simulation. The Kaggle dataset contains generated summary tables and figures only; raw DepMap and GDC/TCGA files are not included.
+
+---
+
 ## Project workflow
 
 ```text
