@@ -1,5 +1,8 @@
 # CRC Dependency Analysis: FAM50A and FAM50B
-
+[![Kaggle Dataset](https://img.shields.io/badge/Kaggle-Dataset-20BEFF?logo=kaggle&logoColor=white)](https://www.kaggle.com/datasets/binivin/crc-dependency-fam50a)
+[![Kaggle Notebook](https://img.shields.io/badge/Kaggle-Notebook-20BEFF?logo=kaggle&logoColor=white)](https://www.kaggle.com/code/binivin/fam50a-dependency-in-fam50b-low-colorectal-cancer)
+[![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![Field](https://img.shields.io/badge/Field-Cancer%20Bioinformatics-green)](#)
 > DepMap-based colorectal cancer gene dependency prediction, TCGA patient projection, and CRISPR knockdown network simulation.
 
 This repository contains a computational biology pipeline for identifying context-specific cancer cell vulnerabilities. The current analysis focuses on the relationship between **FAM50A dependency** and **FAM50B expression** in colorectal cancer.
@@ -29,7 +32,7 @@ The final simulation suggests that tumors with high predicted FAM50A vulnerabili
 
 ---
 
-## Kaggle resources
+## Live Kaggle version
 
 A public Kaggle dataset and notebook are available for viewing the generated figures, summary tables, and figure-centered analysis workflow.
 
